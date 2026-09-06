@@ -1,3 +1,48 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบขับถ่าย และโรคที่ควรรู้</title>
+  
+  <!-- Tailwind CSS สำหรับตกแต่งเว็บ -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel สำหรับแปลงโค้ด JSX ให้ทำงานบนเบราว์เซอร์ได้โดยตรง -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans selection:bg-blue-200">
+  
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    // --- ไอคอน SVG (แทนที่ lucide-react เพื่อให้รันไฟล์เดียวได้) ---
+    const IconStethoscope = ({className}) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>;
+    const IconBookOpen = ({className}) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>;
+    const IconDroplets = ({className}) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7 2.9 7 2.9s-2.29 6.16-2.29 6.16C3.57 10 3 11.09 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 1 14 8c2 2.67 4 5.56 4 8.28a4.7 4.7 0 0 1-9.4 0c0-1.89 1-4.02 2.45-5.9"/></svg>;
+    const IconActivity = ({className}) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
+    const IconAlertCircle = ({className}) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>;
+    const IconShieldAlert = ({className}) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>;
+    const IconFileText = ({className}) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>;
+    const IconCheckCircle = ({className}) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
+    const IconChevronRight = ({className}) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>;
+    const IconUser = ({className}) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+
+    // --- ข้อมูลเนื้อหาบทเรียน ---
     const diseasesData = [
       { id: 'kidney-stones', name: 'โรคนิ่วในไต', icon: <IconDroplets className="w-8 h-8 text-blue-500" />, cause: 'เกิดจากการตกตะกอนของแร่ธาตุและเกลือในปัสสาวะจนกลายเป็นก้อนแข็ง สาเหตุหลักมาจากการดื่มน้ำน้อยเกินไป ทานอาหารที่มีรสเค็มจัด มีโปรตีนสูง หรือมีสารออกซาเลตสูง รวมถึงพันธุกรรม', symptoms: 'ปวดบิดรุนแรงบริเวณหลังหรือด้านข้างลำตัว ร้าวลงมาที่ขาหนีบ ปัสสาวะมีเลือดปน ปัสสาวะขุ่นหรือมีกลิ่นเหม็น คลื่นไส้อาเจียน หากมีการติดเชื้อร่วมด้วยจะมีไข้', treatment: 'ดื่มน้ำมากๆ เพื่อให้ก้อนนิ่วขนาดเล็กหลุดออกมาเอง, การใช้ยาลดปวดและยาขยายท่อไต, การสลายนิ่วด้วยคลื่นเสียงความถี่สูง (ESWL), หรือการผ่าตัดเจาะผ่านผิวหนัง/ส่องกล้องสำหรับนิ่วขนาดใหญ่' },
       { id: 'acute-kidney-failure', name: 'โรคไตวายเฉียบพลัน', icon: <IconActivity className="w-8 h-8 text-red-500" />, cause: 'การที่ไตสูญเสียการทำงานอย่างกะทันหันภายในเวลาไม่กี่ชั่วโมงหรือกี่วัน สาเหตุแบ่งเป็น 3 กลุ่ม: 1) เลือดไปเลี้ยงไตลดลงกะทันหัน 2) เนื้อไตถูกทำลาย 3) ทางเดินปัสสาวะอุดตันเฉียบพลัน', symptoms: 'ปัสสาวะออกน้อยลงมากหรือไม่ออกเลย มีอาการบวมที่ขา ข้อเท้า หรือรอบดวงตา หอบเหนื่อย อ่อนเพลีย สับสน และอาจหมดสติจากของเสียคั่งในเลือด', treatment: 'มุ่งเน้นการรักษาสาเหตุตั้งต้น เช่น ให้น้ำเกลือทดแทนกรณีขาดน้ำ หยุดยาที่ทำลายไต และอาจต้องทำการฟอกเลือดด้วยเครื่องไตเทียม (Hemodialysis) ชั่วคราว' },
