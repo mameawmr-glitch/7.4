@@ -1,478 +1,248 @@
-import React, { useState } from 'react';
-import { BookOpen, Activity, AlertCircle, FileText, CheckCircle, ChevronRight, User, Stethoscope, Droplets, ShieldAlert } from 'lucide-react';
+    const diseasesData = [
+      { id: 'kidney-stones', name: 'โรคนิ่วในไต', icon: <IconDroplets className="w-8 h-8 text-blue-500" />, cause: 'เกิดจากการตกตะกอนของแร่ธาตุและเกลือในปัสสาวะจนกลายเป็นก้อนแข็ง สาเหตุหลักมาจากการดื่มน้ำน้อยเกินไป ทานอาหารที่มีรสเค็มจัด มีโปรตีนสูง หรือมีสารออกซาเลตสูง รวมถึงพันธุกรรม', symptoms: 'ปวดบิดรุนแรงบริเวณหลังหรือด้านข้างลำตัว ร้าวลงมาที่ขาหนีบ ปัสสาวะมีเลือดปน ปัสสาวะขุ่นหรือมีกลิ่นเหม็น คลื่นไส้อาเจียน หากมีการติดเชื้อร่วมด้วยจะมีไข้', treatment: 'ดื่มน้ำมากๆ เพื่อให้ก้อนนิ่วขนาดเล็กหลุดออกมาเอง, การใช้ยาลดปวดและยาขยายท่อไต, การสลายนิ่วด้วยคลื่นเสียงความถี่สูง (ESWL), หรือการผ่าตัดเจาะผ่านผิวหนัง/ส่องกล้องสำหรับนิ่วขนาดใหญ่' },
+      { id: 'acute-kidney-failure', name: 'โรคไตวายเฉียบพลัน', icon: <IconActivity className="w-8 h-8 text-red-500" />, cause: 'การที่ไตสูญเสียการทำงานอย่างกะทันหันภายในเวลาไม่กี่ชั่วโมงหรือกี่วัน สาเหตุแบ่งเป็น 3 กลุ่ม: 1) เลือดไปเลี้ยงไตลดลงกะทันหัน 2) เนื้อไตถูกทำลาย 3) ทางเดินปัสสาวะอุดตันเฉียบพลัน', symptoms: 'ปัสสาวะออกน้อยลงมากหรือไม่ออกเลย มีอาการบวมที่ขา ข้อเท้า หรือรอบดวงตา หอบเหนื่อย อ่อนเพลีย สับสน และอาจหมดสติจากของเสียคั่งในเลือด', treatment: 'มุ่งเน้นการรักษาสาเหตุตั้งต้น เช่น ให้น้ำเกลือทดแทนกรณีขาดน้ำ หยุดยาที่ทำลายไต และอาจต้องทำการฟอกเลือดด้วยเครื่องไตเทียม (Hemodialysis) ชั่วคราว' },
+      { id: 'chronic-kidney-disease', name: 'โรคไตวายเรื้อรัง', icon: <IconActivity className="w-8 h-8 text-orange-500" />, cause: 'การที่เนื้อไตถูกทำลายอย่างต่อเนื่องและค่อยเป็นค่อยไป สาเหตุอันดับหนึ่งคือ "โรคเบาหวาน" และ "โรคความดันโลหิตสูง" ที่ควบคุมไม่ได้ ทำให้หลอดเลือดฝอยในไตเสื่อมสภาพ', symptoms: 'ในระยะแรกมักไม่มีอาการ เมื่อเข้าสู่ระยะท้ายๆ จะมีอาการอ่อนเพลีย เบื่ออาหาร คลื่นไส้ บวมตามตัว ปัสสาวะเป็นฟอง (มีโปรตีนรั่ว) ซีด และผิวหนังแห้งคัน', treatment: 'ไม่สามารถรักษาให้หายขาดได้ การรักษาคือการชะลอความเสื่อม เช่น ควบคุมน้ำตาลและความดัน ควบคุมอาหาร หากเข้าสู่ระยะสุดท้าย ต้องฟอกเลือด ล้างไต หรือปลูกถ่ายไต' },
+      { id: 'urethritis', name: 'โรคท่อปัสสาวะอักเสบ', icon: <IconAlertCircle className="w-8 h-8 text-yellow-500" />, cause: 'การอักเสบของท่อที่นำปัสสาวะจากกระเพาะปัสสาวะออกสู่ภายนอกร่างกาย สาเหตุส่วนใหญ่เกิดจากการติดเชื้อแบคทีเรีย ซึ่งมักเกี่ยวข้องกับโรคติดต่อทางเพศสัมพันธ์ (STDs) หรือเกิดจากการระคายเคืองทางเคมี', symptoms: 'รู้สึกปวดแสบปวดร้อนเวลาปัสสาวะ มีหนองหรือสารคัดหลั่งไหลออกมาจากท่อปัสสาวะ ปัสสาวะบ่อย อาจมีอาการคันหรือบวมบริเวณปลายท่อปัสสาวะ', treatment: 'ใช้ยาปฏิชีวนะตามชนิดของเชื้อที่ตรวจพบ แนะนำให้งดการมีเพศสัมพันธ์จนกว่าจะรักษาหาย และควรให้คู่นอนมารับการตรวจรักษาด้วยเพื่อป้องกันการติดเชื้อซ้ำ' },
+      { id: 'cystitis', name: 'โรคกระเพาะปัสสาวะอักเสบ', icon: <IconShieldAlert className="w-8 h-8 text-pink-500" />, cause: 'มักเกิดจากการติดเชื้อแบคทีเรีย (โดยเฉพาะ E. coli จากลำไส้) ที่เคลื่อนตัวผ่านท่อปัสสาวะเข้าไปในกระเพาะปัสสาวะ พบในผู้หญิงมากกว่าผู้ชาย พฤติกรรมเสี่ยงคือ การกลั้นปัสสาวะเป็นเวลานาน ดื่มน้ำน้อย หรือสุขอนามัยไม่ดี', symptoms: 'ปวดปัสสาวะบ่อยและรีบด่วน ปัสสาวะกะปริบกะปรอย ปวดแสบขัดเวลาปัสสาวะ ปวดบริเวณท้องน้อย ปัสสาวะมีสีขุ่น มีกลิ่นเหม็น หรือมีเลือดปน', treatment: 'ใช้ยาปฏิชีวนะระยะสั้น (3-5 วัน) ดื่มน้ำมากๆ เพื่อล้างเชื้อโรคออก ไม่กลั้นปัสสาวะ และรักษาความสะอาดบริเวณอวัยวะเพศ' }
+    ];
 
-// --- ข้อมูลเนื้อหาบทเรียน ---
-const diseasesData = [
-  {
-    id: 'kidney-stones',
-    name: 'โรคนิ่วในไต (Kidney Stones)',
-    icon: <Droplets className="w-8 h-8 text-blue-500" />,
-    cause: 'เกิดจากการตกตะกอนของแร่ธาตุและเกลือในปัสสาวะจนกลายเป็นก้อนแข็ง สาเหตุหลักมาจากการดื่มน้ำน้อยเกินไป ทานอาหารที่มีรสเค็มจัด มีโปรตีนสูง หรือมีสารออกซาเลตสูง (เช่น ผักโขม ช็อกโกแลต) รวมถึงพันธุกรรม',
-    symptoms: 'ปวดบิดรุนแรงบริเวณหลังหรือด้านข้างลำตัว ร้าวลงมาที่ขาหนีบ ปัสสาวะมีเลือดปน ปัสสาวะขุ่นหรือมีกลิ่นเหม็น คลื่นไส้อาเจียน หากมีการติดเชื้อร่วมด้วยจะมีไข้',
-    treatment: 'ดื่มน้ำมากๆ เพื่อให้ก้อนนิ่วขนาดเล็กหลุดออกมาเอง, การใช้ยาลดปวดและยาขยายท่อไต, การสลายนิ่วด้วยคลื่นเสียงความถี่สูง (ESWL), หรือการผ่าตัดเจาะผ่านผิวหนัง/ส่องกล้องสำหรับนิ่วขนาดใหญ่'
-  },
-  {
-    id: 'acute-kidney-failure',
-    name: 'โรคไตวายเฉียบพลัน (Acute Kidney Failure)',
-    icon: <Activity className="w-8 h-8 text-red-500" />,
-    cause: 'การที่ไตสูญเสียการทำงานอย่างกะทันหันภายในเวลาไม่กี่ชั่วโมงหรือกี่วัน สาเหตุแบ่งเป็น 3 กลุ่ม: 1) เลือดไปเลี้ยงไตลดลงกะทันหัน (เช่น เสียเลือดมาก ขาดน้ำรุนแรง ช็อก) 2) เนื้อไตถูกทำลาย (เช่น จากสารพิษ ยาบางชนิด การติดเชื้อรุนแรง) 3) ทางเดินปัสสาวะอุดตันเฉียบพลัน',
-    symptoms: 'ปัสสาวะออกน้อยลงมากหรือไม่ออกเลย มีอาการบวมที่ขา ข้อเท้า หรือรอบดวงตา หอบเหนื่อย อ่อนเพลีย สับสน และอาจหมดสติจากของเสียคั่งในเลือด',
-    treatment: 'มุ่งเน้นการรักษาสาเหตุตั้งต้น เช่น ให้น้ำเกลือทดแทนกรณีขาดน้ำ หยุดยาที่ทำลายไต และอาจต้องทำการฟอกเลือดด้วยเครื่องไตเทียม (Hemodialysis) ชั่วคราวเพื่อให้ไตได้ฟื้นตัว'
-  },
-  {
-    id: 'chronic-kidney-disease',
-    name: 'โรคไตวายเรื้อรัง (Chronic Kidney Disease - CKD)',
-    icon: <Activity className="w-8 h-8 text-orange-500" />,
-    cause: 'การที่เนื้อไตถูกทำลายอย่างต่อเนื่องและค่อยเป็นค่อยไปเป็นเวลาหลายเดือนหรือหลายปี สาเหตุอันดับหนึ่งคือ "โรคเบาหวาน" และ "โรคความดันโลหิตสูง" ที่ควบคุมไม่ได้ ทำให้หลอดเลือดฝอยในไตเสื่อมสภาพ',
-    symptoms: 'ในระยะแรกมักไม่มีอาการ (ภัยเงียบ) เมื่อเข้าสู่ระยะท้ายๆ จะมีอาการอ่อนเพลีย เบื่ออาหาร คลื่นไส้ บวมตามตัว ปัสสาวะเป็นฟอง (มีโปรตีนรั่ว) ซีด และผิวหนังแห้งคัน',
-    treatment: 'ไม่สามารถรักษาให้หายขาดได้ การรักษาคือการชะลอความเสื่อม เช่น ควบคุมน้ำตาลและความดัน ควบคุมอาหาร (ลดเค็ม ลดโปรตีน ลดฟอสฟอรัส) หากเข้าสู่ระยะสุดท้าย ต้องฟอกเลือด ล้างไตทางหน้าท้อง หรือปลูกถ่ายไต'
-  },
-  {
-    id: 'urethritis',
-    name: 'โรคท่อปัสสาวะอักเสบ (Urethritis)',
-    icon: <AlertCircle className="w-8 h-8 text-yellow-500" />,
-    cause: 'การอักเสบของท่อที่นำปัสสาวะจากกระเพาะปัสสาวะออกสู่ภายนอกร่างกาย สาเหตุส่วนใหญ่เกิดจากการติดเชื้อแบคทีเรีย ซึ่งมักเกี่ยวข้องกับโรคติดต่อทางเพศสัมพันธ์ (STDs) เช่น หนองในแท้ หนองในเทียม หรือเกิดจากการระคายเคืองทางเคมี',
-    symptoms: 'รู้สึกปวดแสบปวดร้อนเวลาปัสสาวะ มีหนองหรือสารคัดหลั่งไหลออกมาจากท่อปัสสาวะ ปัสสาวะบ่อย อาจมีอาการคันหรือบวมบริเวณปลายท่อปัสสาวะ',
-    treatment: 'ใช้ยาปฏิชีวนะตามชนิดของเชื้อที่ตรวจพบ แนะนำให้งดการมีเพศสัมพันธ์จนกว่าจะรักษาหาย และควรให้คู่นอนมารับการตรวจรักษาด้วยเพื่อป้องกันการติดเชื้อซ้ำ'
-  },
-  {
-    id: 'cystitis',
-    name: 'โรคกระเพาะปัสสาวะอักเสบ (Cystitis)',
-    icon: <ShieldAlert className="w-8 h-8 text-pink-500" />,
-    cause: 'มักเกิดจากการติดเชื้อแบคทีเรีย (โดยเฉพาะ E. coli จากลำไส้) ที่เคลื่อนตัวผ่านท่อปัสสาวะเข้าไปในกระเพาะปัสสาวะ พบในผู้หญิงมากกว่าผู้ชาย พฤติกรรมเสี่ยงคือ การกลั้นปัสสาวะเป็นเวลานาน การดื่มน้ำน้อย หรือสุขอนามัยหลังขับถ่ายไม่ถูกวิธี',
-    symptoms: 'ปวดปัสสาวะบ่อยและรีบด่วน ปัสสาวะกะปริบกะปรอย ปวดแสบขัดเวลาปัสสาวะ ปวดบริเวณท้องน้อย ปัสสาวะมีสีขุ่น มีกลิ่นเหม็น หรือมีเลือดปน',
-    treatment: 'ใช้ยาปฏิชีวนะระยะสั้น (3-5 วัน) ดื่มน้ำมากๆ เพื่อล้างเชื้อโรคออก ไม่กลั้นปัสสาวะ และรักษาความสะอาดบริเวณอวัยวะเพศ'
-  }
-];
+    // --- ข้อมูลแบบทดสอบ ---
+    const quizQuestions = [
+      { id: 1, question: "นางสาว เอ เป็นนักเรียนที่มักจะกลั้นปัสสาวะเป็นเวลานานเพราะห้องน้ำโรงเรียนไม่สะอาด ต่อมาเธอมีอาการปวดแสบขัดเวลาเข้าห้องน้ำและปัสสาวะกะปริบกะปรอย อาการดังกล่าวสอดคล้องกับโรคใด?", options: ["ท่อปัสสาวะอักเสบ จากการติดเชื้อทางเพศสัมพันธ์", "นิ่วในไต จากการตกตะกอนของแร่ธาตุเพราะไม่ยอมปัสสาวะ", "กระเพาะปัสสาวะอักเสบ จากการที่แบคทีเรียสะสมและเจริญเติบโตเนื่องจากการกลั้นปัสสาวะ", "ไตวายเฉียบพลัน จากของเสียย้อนกลับไปทำลายเนื้อไต"], correctAnswer: 2 },
+      { id: 2, question: "แพทย์แนะนำให้ผู้ป่วยรายหนึ่งเข้ารับการรักษาด้วยวิธีการ ESWL (การสลายนิ่วด้วยคลื่นเสียงความถี่สูง) ผู้ป่วยรายนี้น่าจะป่วยเป็นโรคใด?", options: ["นิ่วในไต; ใช้คลื่นเสียงกระแทกก้อนนิ่วให้แตกเป็นชิ้นเล็กๆ", "ไตวายเรื้อรัง; ใช้คลื่นเสียงกระตุ้นการทำงานของหน่วยไตให้ฟื้นฟู", "กระเพาะปัสสาวะอักเสบ; ใช้คลื่นเสียงทำลายผนังเซลล์ของแบคทีเรีย", "นิ่วในไต; ใช้คลื่นเสียงความร้อนละลายนิ่วให้กลายเป็นน้ำ"], correctAnswer: 0 },
+      { id: 3, question: "เหตุใดผู้ป่วยโรคเบาหวานที่มีระดับน้ำตาลในเลือดสูงสะสมเป็นเวลานาน จึงมีความเสี่ยงสูงที่จะเกิดโรคไตวายเรื้อรังในอนาคต?", options: ["น้ำตาลในเลือดสูงทำให้เกิดการติดเชื้อในกรวยไตได้ง่ายขึ้น", "น้ำตาลที่มากเกินไปจะไปตกตะกอนเป็นก้อนนิ่วอุดตันทางเดินปัสสาวะ", "น้ำตาลในเลือดสูงจะทำลายหลอดเลือดฝอยที่ทำหน้าที่กรองของเสียในไตอย่างช้าๆ", "ระดับน้ำตาลสูงทำให้กระเพาะปัสสาวะบีบตัวผิดปกติ ของเสียจึงคั่งในไต"], correctAnswer: 2 },
+      { id: 4, question: "นักกีฬาวิ่งมาราธอนเกิดภาวะขาดน้ำรุนแรง และช็อกหมดสติ เมื่อส่งโรงพยาบาลพบว่าไตหยุดผลิตปัสสาวะ ภาวะนี้จัดเป็นโรคใด?", options: ["ไตวายเรื้อรัง; เกิดจากการสูญเสียเกลือแร่ทางเหงื่อมากเกินไป", "ไตวายเฉียบพลัน; ปริมาณเลือดที่ไปเลี้ยงไตลดลงอย่างกะทันหันจากภาวะขาดน้ำ", "กระเพาะปัสสาวะอักเสบเฉียบพลัน; แบคทีเรียเจริญเติบโตเร็วเมื่อร่างกายอ่อนแอ", "นิ่วในไตเฉียบพลัน; ขาดน้ำทำให้เกิดผลึกนิ่วอุดตันทันที"], correctAnswer: 1 },
+      { id: 5, question: "หากนักเรียนต้องการลดความเสี่ยงในการเป็น 'โรคนิ่วในไต' พฤติกรรมใดต่อไปนี้ที่นักเรียนควร 'หลีกเลี่ยง' มากที่สุด?", options: ["ดื่มน้ำเปล่าวันละ 8-10 แก้วเป็นประจำ", "รับประทานอาหารที่มีรสเค็มจัดและชอบทานผักโขมปริมาณมาก", "ออกกำลังกายอย่างสม่ำเสมอสัปดาห์ละ 3 วัน", "ไม่กลั้นปัสสาวะเมื่อรู้สึกปวด"], correctAnswer: 1 },
+      { id: 6, question: "ข้อใดคือความแตกต่างที่สำคัญที่สุดระหว่าง 'โรคกระเพาะปัสสาวะอักเสบ' และ 'โรคท่อปัสสาวะอักเสบ' ในแง่ของสาเหตุการเกิดโรคที่พบบ่อย?", options: ["กระเพาะปัสสาวะอักเสบมักเกิดจากเชื้อรา แต่ท่อปัสสาวะอักเสบเกิดจากไวรัส", "กระเพาะปัสสาวะอักเสบสัมพันธ์กับการกลั้นปัสสาวะ แต่ท่อปัสสาวะอักเสบมักสัมพันธ์กับโรคติดต่อทางเพศสัมพันธ์", "กระเพาะปัสสาวะอักเสบเกิดจากการกินเค็ม แต่ท่อปัสสาวะอักเสบเกิดจากการดื่มน้ำน้อย", "ทั้งสองโรคมีสาเหตุเหมือนกันทุกประการ ต่างกันแค่ตำแหน่ง"], correctAnswer: 1 },
+      { id: 7, question: "ผู้ป่วยโรคไตวายเรื้อรังระยะสุดท้าย (End-Stage Renal Disease) วิธีการรักษาใดต่อไปนี้ที่เป็นทางเลือกที่ยั่งยืนที่สุด?", options: ["การควบคุมอาหารและลดโปรตีนอย่างเคร่งครัด", "การรับประทานยาขับปัสสาวะปริมาณสูง", "การฟอกเลือดด้วยเครื่องไตเทียมไปตลอดชีวิต", "การผ่าตัดปลูกถ่ายไต (Kidney Transplantation)"], correctAnswer: 3 },
+      { id: 8, question: "ทำไมผู้ป่วยที่มีภาวะไตวาย (ไม่ว่าจะเฉียบพลันหรือเรื้อรัง) จึงมักมีอาการแสดงคือ 'ตัวบวม ขาบวม หรือหนังตาบวม'?", options: ["ไตสร้างโปรตีนชนิดที่ทำให้ร่างกายบวมน้ำออกมามากเกินไป", "ไตไม่สามารถกรองและขับน้ำรวมถึงโซเดียมส่วนเกินออกจากร่างกายได้ตามปกติ", "การอักเสบของไตส่งผลให้ต่อมน้ำเหลืองทั่วร่างกายทำงานผิดปกติ", "ผู้ป่วยมีพฤติกรรมดื่มน้ำมากเกินไปเพื่อชดเชยการทำงานของไต"], correctAnswer: 1 },
+      { id: 9, question: "คุณตาวัย 70 ปี ตรวจพบว่าเป็นโรคไตวายเรื้อรังระยะที่ 4 สารอาหารกลุ่มใดที่คุณตาควรจำกัดปริมาณเพื่อ 'ลดภาระการทำงานของไต' มากที่สุด?", options: ["โปรตีน โซเดียม และฟอสฟอรัส", "คาร์โบไฮเดรต และไขมัน", "วิตามินซี และแคลเซียม", "เส้นใยอาหาร (ไฟเบอร์) และธาตุเหล็ก"], correctAnswer: 0 },
+      { id: 10, question: "หากผู้ป่วยมีก้อนนิ่วขนาดใหญ่หลุดลงมาอุดตันที่ท่อไต (Ureter) ทั้งสองข้างอย่างสมบูรณ์เป็นเวลาหลายวัน ผลกระทบสืบเนื่องที่รุนแรงที่สุดที่จะเกิดขึ้นตามมาอย่างรวดเร็วคืออะไร?", options: ["โรคไตวายเรื้อรัง", "โรคไตวายเฉียบพลัน จากการที่ปัสสาวะไหลย้อนกลับไปกดทับเนื้อไต", "โรคกระเพาะปัสสาวะอักเสบเรื้อรัง", "โรคมะเร็งกระเพาะปัสสาวะ"], correctAnswer: 1 }
+    ];
 
-// --- ข้อมูลแบบทดสอบ (วิเคราะห์และประยุกต์) ---
-const quizQuestions = [
-  {
-    id: 1,
-    question: "นางสาว เอ เป็นนักเรียนที่มักจะกลั้นปัสสาวะเป็นเวลานานเพราะห้องน้ำโรงเรียนไม่สะอาด ต่อมาเธอมีอาการปวดแสบขัดเวลาเข้าห้องน้ำและปัสสาวะกะปริบกะปรอย อาการดังกล่าวสอดคล้องกับโรคใด และมีกลไกการเกิดโรคอย่างไร?",
-    options: [
-      "ท่อปัสสาวะอักเสบ จากการติดเชื้อทางเพศสัมพันธ์",
-      "นิ่วในไต จากการตกตะกอนของแร่ธาตุเพราะไม่ยอมปัสสาวะ",
-      "กระเพาะปัสสาวะอักเสบ จากการที่แบคทีเรียสะสมและเจริญเติบโตเนื่องจากการกลั้นปัสสาวะ",
-      "ไตวายเฉียบพลัน จากของเสียย้อนกลับไปทำลายเนื้อไต"
-    ],
-    correctAnswer: 2
-  },
-  {
-    id: 2,
-    question: "แพทย์แนะนำให้ผู้ป่วยรายหนึ่งเข้ารับการรักษาด้วยวิธีการ ESWL (การสลายนิ่วด้วยคลื่นเสียงความถี่สูง) ผู้ป่วยรายนี้น่าจะป่วยเป็นโรคใด และข้อใดคือหลักการของการรักษานี้?",
-    options: [
-      "นิ่วในไต; ใช้คลื่นเสียงกระแทกก้อนนิ่วให้แตกเป็นชิ้นเล็กๆ เพื่อให้ขับออกมากับปัสสาวะได้",
-      "ไตวายเรื้อรัง; ใช้คลื่นเสียงกระตุ้นการทำงานของหน่วยไตให้ฟื้นฟู",
-      "กระเพาะปัสสาวะอักเสบ; ใช้คลื่นเสียงทำลายผนังเซลล์ของแบคทีเรีย",
-      "นิ่วในไต; ใช้คลื่นเสียงความร้อนละลายนิ่วให้กลายเป็นน้ำ"
-    ],
-    correctAnswer: 0
-  },
-  {
-    id: 3,
-    question: "เหตุใดผู้ป่วยโรคเบาหวานที่มีระดับน้ำตาลในเลือดสูงสะสมเป็นเวลานาน จึงมีความเสี่ยงสูงที่จะเกิดโรคไตวายเรื้อรังในอนาคต?",
-    options: [
-      "น้ำตาลในเลือดสูงทำให้เกิดการติดเชื้อในกรวยไตได้ง่ายขึ้น",
-      "น้ำตาลที่มากเกินไปจะไปตกตะกอนเป็นก้อนนิ่วอุดตันทางเดินปัสสาวะ",
-      "น้ำตาลในเลือดสูงจะทำลายหลอดเลือดฝอยที่ทำหน้าที่กรองของเสียในไตอย่างช้าๆ",
-      "ระดับน้ำตาลสูงทำให้กระเพาะปัสสาวะบีบตัวผิดปกติ ของเสียจึงคั่งในไต"
-    ],
-    correctAnswer: 2
-  },
-  {
-    id: 4,
-    question: "นักกีฬาวิ่งมาราธอนเกิดภาวะขาดน้ำรุนแรง (Severe Dehydration) และช็อกหมดสติ เมื่อส่งโรงพยาบาลพบว่าไตหยุดผลิตปัสสาวะ ภาวะนี้จัดเป็นโรคใด และเกิดจากสาเหตุใด?",
-    options: [
-      "ไตวายเรื้อรัง; เกิดจากการสูญเสียเกลือแร่ทางเหงื่อมากเกินไป",
-      "ไตวายเฉียบพลัน; ปริมาณเลือดที่ไปเลี้ยงไตลดลงอย่างกะทันหันจากภาวะขาดน้ำ",
-      "กระเพาะปัสสาวะอักเสบเฉียบพลัน; แบคทีเรียเจริญเติบโตเร็วเมื่อร่างกายอ่อนแอ",
-      "นิ่วในไตเฉียบพลัน; ขาดน้ำทำให้เกิดผลึกนิ่วอุดตันทันทีภายใน 1 ชั่วโมง"
-    ],
-    correctAnswer: 1
-  },
-  {
-    id: 5,
-    question: "หากนักเรียนต้องการลดความเสี่ยงในการเป็น 'โรคนิ่วในไต' พฤติกรรมใดต่อไปนี้ที่นักเรียนควร 'หลีกเลี่ยง' มากที่สุด?",
-    options: [
-      "ดื่มน้ำเปล่าวันละ 8-10 แก้วเป็นประจำ",
-      "รับประทานอาหารที่มีรสเค็มจัดและชอบทานผักโขมปริมาณมาก",
-      "ออกกำลังกายอย่างสม่ำเสมอสัปดาห์ละ 3 วัน",
-      "ไม่กลั้นปัสสาวะเมื่อรู้สึกปวด"
-    ],
-    correctAnswer: 1
-  },
-  {
-    id: 6,
-    question: "ข้อใดคือความแตกต่างที่สำคัญที่สุดระหว่าง 'โรคกระเพาะปัสสาวะอักเสบ' และ 'โรคท่อปัสสาวะอักเสบ' ในแง่ของสาเหตุการเกิดโรคที่พบบ่อย?",
-    options: [
-      "กระเพาะปัสสาวะอักเสบมักเกิดจากเชื้อรา แต่ท่อปัสสาวะอักเสบเกิดจากไวรัส",
-      "กระเพาะปัสสาวะอักเสบสัมพันธ์กับการกลั้นปัสสาวะ(เชื้อจากลำไส้) แต่ท่อปัสสาวะอักเสบมักสัมพันธ์กับโรคติดต่อทางเพศสัมพันธ์",
-      "กระเพาะปัสสาวะอักเสบเกิดจากการกินเค็ม แต่ท่อปัสสาวะอักเสบเกิดจากการดื่มน้ำน้อย",
-      "ทั้งสองโรคมีสาเหตุเหมือนกันทุกประการ ต่างกันแค่ตำแหน่ง"
-    ],
-    correctAnswer: 1
-  },
-  {
-    id: 7,
-    question: "ผู้ป่วยโรคไตวายเรื้อรังระยะสุดท้าย (End-Stage Renal Disease) ที่มีค่าการทำงานของไต (GFR) ต่ำกว่า 15% วิธีการรักษาใดต่อไปนี้ที่เป็นทางเลือกที่ยั่งยืนและทำให้ผู้ป่วยมีคุณภาพชีวิตใกล้เคียงคนปกติมากที่สุด?",
-    options: [
-      "การควบคุมอาหารและลดโปรตีนอย่างเคร่งครัด",
-      "การรับประทานยาขับปัสสาวะปริมาณสูง",
-      "การฟอกเลือดด้วยเครื่องไตเทียมไปตลอดชีวิต",
-      "การผ่าตัดปลูกถ่ายไต (Kidney Transplantation)"
-    ],
-    correctAnswer: 3
-  },
-  {
-    id: 8,
-    question: "ทำไมผู้ป่วยที่มีภาวะไตวาย (ไม่ว่าจะเฉียบพลันหรือเรื้อรัง) จึงมักมีอาการแสดงคือ 'ตัวบวม ขาบวม หรือหนังตาบวม'?",
-    options: [
-      "ไตสร้างโปรตีนชนิดที่ทำให้ร่างกายบวมน้ำออกมามากเกินไป",
-      "ไตไม่สามารถกรองและขับน้ำรวมถึงโซเดียมส่วนเกินออกจากร่างกายได้ตามปกติ",
-      "การอักเสบของไตส่งผลให้ต่อมน้ำเหลืองทั่วร่างกายทำงานผิดปกติ",
-      "ผู้ป่วยมีพฤติกรรมดื่มน้ำมากเกินไปเพื่อชดเชยการทำงานของไต"
-    ],
-    correctAnswer: 1
-  },
-  {
-    id: 9,
-    question: "คุณตาวัย 70 ปี ตรวจพบว่าเป็นโรคไตวายเรื้อรังระยะที่ 4 แพทย์สั่งให้จำกัดอาหารอย่างเข้มงวด สารอาหารกลุ่มใดที่คุณตาควรจำกัดปริมาณเพื่อ 'ลดภาระการทำงานของไตในการขับของเสีย' มากที่สุด?",
-    options: [
-      "โปรตีน โซเดียม และฟอสฟอรัส",
-      "คาร์โบไฮเดรต และไขมัน",
-      "วิตามินซี และแคลเซียม",
-      "เส้นใยอาหาร (ไฟเบอร์) และธาตุเหล็ก"
-    ],
-    correctAnswer: 0
-  },
-  {
-    id: 10,
-    question: "หากผู้ป่วยมีก้อนนิ่วขนาดใหญ่หลุดลงมาอุดตันที่ท่อไต (Ureter) ทั้งสองข้างอย่างสมบูรณ์เป็นเวลาหลายวัน ผลกระทบสืบเนื่องที่รุนแรงที่สุดที่จะเกิดขึ้นตามมาอย่างรวดเร็วคืออะไร?",
-    options: [
-      "โรคไตวายเรื้อรัง",
-      "โรคไตวายเฉียบพลัน จากการที่ปัสสาวะไหลย้อนกลับไปกดทับเนื้อไต",
-      "โรคกระเพาะปัสสาวะอักเสบเรื้อรัง",
-      "โรคมะเร็งกระเพาะปัสสาวะ"
-    ],
-    correctAnswer: 1
-  }
-];
+    function App() {
+      const [currentView, setCurrentView] = useState('intro');
+      const [studentName, setStudentName] = useState('');
+      const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+      const [score, setScore] = useState(0);
+      const [isSubmitting, setIsSubmitting] = useState(false);
+      const [saveStatus, setSaveStatus] = useState(null);
 
-export default function App() {
-  // Application states: 'intro', 'lesson', 'register', 'quiz', 'result'
-  const [currentView, setCurrentView] = useState('intro');
-  const [studentName, setStudentName] = useState('');
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [score, setScore] = useState(0);
-  const [userAnswers, setUserAnswers] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [saveStatus, setSaveStatus] = useState(null); // 'success' | 'error' | null
-
-  // ---- Functions ----
-  
-  const handleStartLesson = () => setCurrentView('lesson');
-  const handleGoToRegister = () => setCurrentView('register');
-  
-  const handleStartQuiz = (e) => {
-    e.preventDefault();
-    if (studentName.trim().length > 0) {
-      setCurrentView('quiz');
-      setScore(0);
-      setCurrentQuestionIndex(0);
-      setUserAnswers([]);
-    }
-  };
-
-  const handleAnswerClick = (optionIndex) => {
-    const isCorrect = optionIndex === quizQuestions[currentQuestionIndex].correctAnswer;
-    
-    // บันทึกคำตอบ
-    const newAnswers = [...userAnswers, { questionId: quizQuestions[currentQuestionIndex].id, selected: optionIndex, isCorrect }];
-    setUserAnswers(newAnswers);
-
-    if (isCorrect) setScore(score + 1);
-
-    // ไปข้อถัดไป หรือ จบ
-    if (currentQuestionIndex + 1 < quizQuestions.length) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      finishQuiz(isCorrect ? score + 1 : score);
-    }
-  };
-
-  const finishQuiz = async (finalScore) => {
-    setCurrentView('result');
-    setIsSubmitting(true);
-    
-    // URL ที่ผู้ใช้สร้างจาก Google Apps Script
-    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyxHx7fQq1D0cfgbv8VT4Zwx2vL36STIjaVmynxkoKdmeF1_6TMnIbdpBuP8sIVoS-F/exec'; 
-
-    try {
-      // ส่งข้อมูลไปยัง Google Sheet โดยใช้ mode: 'no-cors' เพื่อไม่ให้เบราว์เซอร์บล็อก
-      const response = await fetch(GOOGLE_SHEET_URL, {
-        method: 'POST',
-        mode: 'no-cors', // สำคัญ: ช่วยแก้ปัญหา CORS Policy
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
-        },
-        body: JSON.stringify({
-          name: studentName,
-          score: finalScore,
-          total: quizQuestions.length
-        })
-      });
+      const handleStartLesson = () => setCurrentView('lesson');
+      const handleGoToRegister = () => setCurrentView('register');
       
-      // เมื่อใช้ no-cors เราจะอ่าน response.ok ไม่ได้ แต่ถ้าไม่มี error ขัดข้องถือว่าส่งสำเร็จ
-      setSaveStatus('success');
-    } catch (error) {
-      console.error('Error saving data:', error);
-      setSaveStatus('error');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+      const handleStartQuiz = (e) => {
+        e.preventDefault();
+        if (studentName.trim().length > 0) {
+          setCurrentView('quiz');
+          setScore(0);
+          setCurrentQuestionIndex(0);
+        }
+      };
 
-  // ---- UI Components ----
+      const handleAnswerClick = (optionIndex) => {
+        const isCorrect = optionIndex === quizQuestions[currentQuestionIndex].correctAnswer;
+        const newScore = isCorrect ? score + 1 : score;
+        
+        if (isCorrect) setScore(newScore);
 
-  const renderIntro = () => (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-4 animate-fade-in">
-      <div className="bg-blue-100 p-6 rounded-full mb-6">
-        <Stethoscope className="w-20 h-20 text-blue-600" />
-      </div>
-      <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-        ระบบขับถ่าย และโรคที่ควรรู้
-      </h1>
-      <p className="text-xl text-gray-600 max-w-2xl mb-8">
-        บทเรียนอิเล็กทรอนิกส์ (e-Learning) สำหรับนักเรียนระดับมัธยมศึกษาตอนปลาย 
-        ศึกษาเกี่ยวกับสาเหตุ อาการ และการรักษาของโรคในระบบขับถ่าย พร้อมแบบทดสอบวิเคราะห์
-      </p>
-      <button 
-        onClick={handleStartLesson}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg transform transition hover:scale-105 flex items-center"
-      >
-        <BookOpen className="mr-2" /> เข้าสู่บทเรียน
-      </button>
-    </div>
-  );
+        if (currentQuestionIndex + 1 < quizQuestions.length) {
+          setCurrentQuestionIndex(currentQuestionIndex + 1);
+        } else {
+          finishQuiz(newScore);
+        }
+      };
 
-  const renderLesson = () => (
-    <div className="animate-fade-in max-w-4xl mx-auto pb-20">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold text-gray-800 inline-flex items-center justify-center">
-          <FileText className="mr-3 text-blue-600" /> เนื้อหาบทเรียน
-        </h2>
-        <p className="text-gray-500 mt-2">ศึกษาความผิดปกติของระบบขับถ่ายทั้ง 5 โรคให้เข้าใจก่อนทำแบบทดสอบ</p>
-      </div>
+      const finishQuiz = async (finalScore) => {
+        setCurrentView('result');
+        setIsSubmitting(true);
+        
+        const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyxHx7fQq1D0cfgbv8VT4Zwx2vL36STIjaVmynxkoKdmeF1_6TMnIbdpBuP8sIVoS-F/exec'; 
 
-      <div className="space-y-8">
-        {diseasesData.map((disease, idx) => (
-          <div key={disease.id} className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-blue-500 hover:shadow-lg transition duration-300">
-            <div className="flex items-center mb-4">
-              <div className="mr-4 bg-gray-50 p-3 rounded-full">
-                {disease.icon}
+        try {
+          await fetch(GOOGLE_SHEET_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              name: studentName,
+              score: finalScore,
+              total: quizQuestions.length
+            })
+          });
+          setSaveStatus('success');
+        } catch (error) {
+          setSaveStatus('error');
+        } finally {
+          setIsSubmitting(false);
+        }
+      };
+
+      return (
+        <div className="min-h-screen">
+          <nav className="bg-white shadow-sm sticky top-0 z-50">
+            <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+              <div className="flex items-center cursor-pointer" onClick={() => currentView !== 'quiz' && setCurrentView('intro')}>
+                <IconActivity className="w-6 h-6 text-blue-600 mr-2" />
+                <span className="font-bold text-lg text-gray-800">BioMed Edu</span>
               </div>
-              <h3 className="text-2xl font-semibold text-gray-800">{idx + 1}. {disease.name}</h3>
+              <div className="flex items-center space-x-4">
+                {(currentView === 'lesson' || currentView === 'register') && (
+                  <button onClick={() => setCurrentView('intro')} className="text-gray-500 hover:text-gray-800 text-sm font-medium transition">
+                    หน้าแรก
+                  </button>
+                )}
+              </div>
             </div>
+          </nav>
+
+          <main className="max-w-6xl mx-auto px-4 py-8">
             
-            <div className="grid md:grid-cols-3 gap-4 mt-4">
-              <div className="bg-red-50 p-4 rounded-xl border border-red-100">
-                <h4 className="font-bold text-red-700 mb-2 flex items-center"><AlertCircle className="w-4 h-4 mr-1" /> สาเหตุการเกิดโรค</h4>
-                <p className="text-gray-700 text-sm leading-relaxed">{disease.cause}</p>
-              </div>
-              <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
-                <h4 className="font-bold text-yellow-700 mb-2 flex items-center"><Activity className="w-4 h-4 mr-1" /> อาการของโรค</h4>
-                <p className="text-gray-700 text-sm leading-relaxed">{disease.symptoms}</p>
-              </div>
-              <div className="bg-green-50 p-4 rounded-xl border border-green-100">
-                <h4 className="font-bold text-green-700 mb-2 flex items-center"><CheckCircle className="w-4 h-4 mr-1" /> แนวทางการรักษา</h4>
-                <p className="text-gray-700 text-sm leading-relaxed">{disease.treatment}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-12 text-center bg-blue-50 p-8 rounded-2xl border border-blue-200">
-        <h3 className="text-2xl font-bold text-gray-800 mb-4">พร้อมทดสอบความรู้หรือยัง?</h3>
-        <p className="text-red-500 mb-6 font-medium">⚠️ คำเตือน: เมื่อเริ่มทำแบบทดสอบแล้ว คุณจะไม่สามารถย้อนกลับมาดูเนื้อหาได้อีก</p>
-        <button 
-          onClick={handleGoToRegister}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg shadow-md flex items-center mx-auto transition-colors"
-        >
-          ทำแบบทดสอบ <ChevronRight className="ml-1" />
-        </button>
-      </div>
-    </div>
-  );
-
-  const renderRegister = () => (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] animate-fade-in">
-      <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full">
-        <div className="text-center mb-6">
-          <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <User className="w-8 h-8 text-blue-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800">ลงทะเบียนก่อนสอบ</h2>
-          <p className="text-gray-500 text-sm mt-1">กรุณากรอกชื่อ-นามสกุลจริง เพื่อบันทึกคะแนน</p>
-        </div>
-
-        <form onSubmit={handleStartQuiz}>
-          <div className="mb-6">
-            <label htmlFor="name" className="block text-gray-700 font-medium mb-2">ชื่อ-นามสกุล / ชั้น / เลขที่</label>
-            <input 
-              type="text" 
-              id="name"
-              required
-              placeholder="เช่น นายเรียนดี ตั้งใจเรียน ม.5/1 เลขที่ 1"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-              value={studentName}
-              onChange={(e) => setStudentName(e.target.value)}
-            />
-          </div>
-          
-          <button 
-            type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg flex justify-center items-center transition"
-          >
-            เริ่มทำแบบทดสอบ <Activity className="ml-2 w-5 h-5" />
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-
-  const renderQuiz = () => {
-    const question = quizQuestions[currentQuestionIndex];
-    const progress = ((currentQuestionIndex) / quizQuestions.length) * 100;
-
-    return (
-      <div className="max-w-3xl mx-auto animate-fade-in pt-8">
-        {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex justify-between text-sm text-gray-500 font-medium mb-2">
-            <span>ผู้ทำแบบทดสอบ: {studentName}</span>
-            <span>ข้อที่ {currentQuestionIndex + 1} / {quizQuestions.length}</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div>
-          </div>
-        </div>
-
-        {/* Question Card */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-          <h3 className="text-xl md:text-2xl font-semibold text-gray-800 mb-6 leading-relaxed">
-            {question.id}. {question.question}
-          </h3>
-          
-          <div className="space-y-3">
-            {question.options.map((option, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleAnswerClick(idx)}
-                className="w-full text-left p-4 rounded-xl border border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 group"
-              >
-                <div className="flex items-start">
-                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 group-hover:bg-blue-600 group-hover:text-white font-bold mr-4 transition-colors">
-                    {String.fromCharCode(65 + idx)}
-                  </span>
-                  <span className="text-gray-700 mt-1">{option}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderResult = () => (
-    <div className="max-w-2xl mx-auto text-center animate-fade-in pt-10">
-      <div className="bg-white rounded-3xl shadow-xl p-10">
-        <div className="inline-flex items-center justify-center w-24 h-24 bg-green-100 rounded-full mb-6">
-          <CheckCircle className="w-12 h-12 text-green-600" />
-        </div>
-        
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">ทำแบบทดสอบเสร็จสิ้น!</h2>
-        <p className="text-gray-500 mb-8">ขอบคุณที่เข้าร่วมการเรียนรู้ {studentName}</p>
-        
-        <div className="bg-gray-50 rounded-2xl p-6 mb-8 border border-gray-100">
-          <p className="text-sm text-gray-500 uppercase tracking-wider font-semibold mb-2">คะแนนของคุณ</p>
-          <div className="text-6xl font-black text-blue-600 flex justify-center items-baseline">
-            {score} <span className="text-3xl text-gray-400 font-medium ml-2">/ {quizQuestions.length}</span>
-          </div>
-        </div>
-
-        {/* Data Saving Status */}
-        <div className="text-sm mb-6">
-          {isSubmitting ? (
-            <span className="text-blue-500 flex items-center justify-center"><Activity className="animate-spin w-4 h-4 mr-2" /> กำลังส่งคำตอบ...</span>
-          ) : saveStatus === 'success' ? (
-            <span className="text-green-500 flex items-center justify-center bg-green-50 p-2 rounded-lg border border-green-200"><CheckCircle className="w-4 h-4 mr-1" /> ส่งคะแนนให้คุณครูเรียบร้อยแล้ว!</span>
-          ) : saveStatus === 'error' ? (
-            <span className="text-red-500 text-xs bg-red-50 p-2 rounded-lg border border-red-200">⚠️ พบข้อผิดพลาดในการส่งข้อมูล กรุณาแจ้งคุณครู</span>
-          ) : null}
-        </div>
-
-        <button 
-          onClick={() => {
-            setCurrentView('intro');
-            setStudentName('');
-          }}
-          className="text-blue-600 font-medium hover:underline"
-        >
-          กลับสู่หน้าเริ่มต้น
-        </button>
-      </div>
-    </div>
-  );
-
-  return (
-    <div className="min-h-screen bg-gray-50 font-sans selection:bg-blue-200">
-      {/* Navbar - ซ่อนปุ่มกลับบทเรียนถ้าอยู่ในโหมดสอบ */}
-      <nav className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center cursor-pointer" onClick={() => currentView !== 'quiz' && setCurrentView('intro')}>
-            <Activity className="w-6 h-6 text-blue-600 mr-2" />
-            <span className="font-bold text-lg text-gray-800">BioMed Edu</span>
-          </div>
-          
-          <div className="flex items-center space-x-4">
             {currentView === 'intro' && (
-               <span className="text-sm text-gray-500 hidden md:block">สื่อการเรียนรู้วิชาชีววิทยา</span>
+              <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-4 animate-fade-in">
+                <div className="bg-blue-100 p-6 rounded-full mb-6">
+                  <IconStethoscope className="w-20 h-20 text-blue-600" />
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">ระบบขับถ่าย และโรคที่ควรรู้</h1>
+                <p className="text-xl text-gray-600 max-w-2xl mb-8">บทเรียนอิเล็กทรอนิกส์สำหรับนักเรียนระดับมัธยมศึกษาตอนปลาย ศึกษาเกี่ยวกับสาเหตุ อาการ และการรักษาของโรคในระบบขับถ่าย พร้อมแบบทดสอบวิเคราะห์</p>
+                <button onClick={handleStartLesson} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg flex items-center">
+                  <IconBookOpen className="mr-2 w-5 h-5" /> เข้าสู่บทเรียน
+                </button>
+              </div>
             )}
-            {(currentView === 'lesson' || currentView === 'register') && (
-              <button 
-                onClick={() => setCurrentView('intro')}
-                className="text-gray-500 hover:text-gray-800 text-sm font-medium transition"
-              >
-                หน้าแรก
-              </button>
+
+            {currentView === 'lesson' && (
+              <div className="animate-fade-in max-w-4xl mx-auto pb-20">
+                <div className="text-center mb-10">
+                  <h2 className="text-3xl font-bold text-gray-800 inline-flex items-center justify-center">
+                    <IconFileText className="mr-3 text-blue-600 w-8 h-8" /> เนื้อหาบทเรียน
+                  </h2>
+                </div>
+                <div className="space-y-8">
+                  {diseasesData.map((disease, idx) => (
+                    <div key={disease.id} className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-blue-500">
+                      <div className="flex items-center mb-4">
+                        <div className="mr-4 bg-gray-50 p-3 rounded-full">{disease.icon}</div>
+                        <h3 className="text-2xl font-semibold text-gray-800">{idx + 1}. {disease.name}</h3>
+                      </div>
+                      <div className="grid md:grid-cols-3 gap-4 mt-4">
+                        <div className="bg-red-50 p-4 rounded-xl border border-red-100">
+                          <h4 className="font-bold text-red-700 mb-2 flex items-center"><IconAlertCircle className="w-4 h-4 mr-1" /> สาเหตุ</h4>
+                          <p className="text-gray-700 text-sm leading-relaxed">{disease.cause}</p>
+                        </div>
+                        <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
+                          <h4 className="font-bold text-yellow-700 mb-2 flex items-center"><IconActivity className="w-4 h-4 mr-1" /> อาการ</h4>
+                          <p className="text-gray-700 text-sm leading-relaxed">{disease.symptoms}</p>
+                        </div>
+                        <div className="bg-green-50 p-4 rounded-xl border border-green-100">
+                          <h4 className="font-bold text-green-700 mb-2 flex items-center"><IconCheckCircle className="w-4 h-4 mr-1" /> การรักษา</h4>
+                          <p className="text-gray-700 text-sm leading-relaxed">{disease.treatment}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-12 text-center bg-blue-50 p-8 rounded-2xl border border-blue-200">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">พร้อมทดสอบความรู้หรือยัง?</h3>
+                  <p className="text-red-500 mb-6 font-medium">⚠️ คำเตือน: เมื่อเริ่มทำแบบทดสอบแล้ว คุณจะไม่สามารถย้อนกลับมาดูเนื้อหาได้อีก</p>
+                  <button onClick={handleGoToRegister} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg shadow-md flex items-center mx-auto">
+                    ทำแบบทดสอบ <IconChevronRight className="ml-1 w-5 h-5" />
+                  </button>
+                </div>
+              </div>
             )}
-            {/* สังเกตว่าไม่มีปุ่มย้อนกลับเมื่อ currentView === 'quiz' */}
-          </div>
+
+            {currentView === 'register' && (
+              <div className="flex flex-col items-center justify-center min-h-[60vh] animate-fade-in">
+                <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full">
+                  <div className="text-center mb-6">
+                    <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <IconUser className="w-8 h-8 text-blue-600" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-800">ลงทะเบียนก่อนสอบ</h2>
+                  </div>
+                  <form onSubmit={handleStartQuiz}>
+                    <div className="mb-6">
+                      <label className="block text-gray-700 font-medium mb-2">ชื่อ-นามสกุล / ชั้น / เลขที่</label>
+                      <input type="text" required placeholder="เช่น นายเรียนดี ตั้งใจเรียน ม.5/1 เลขที่ 1" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" value={studentName} onChange={(e) => setStudentName(e.target.value)} />
+                    </div>
+                    <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg flex justify-center items-center">
+                      เริ่มทำแบบทดสอบ <IconActivity className="ml-2 w-5 h-5" />
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {currentView === 'quiz' && (
+              <div className="max-w-3xl mx-auto animate-fade-in pt-8">
+                <div className="mb-8">
+                  <div className="flex justify-between text-sm text-gray-500 font-medium mb-2">
+                    <span>ผู้ทำแบบทดสอบ: {studentName}</span>
+                    <span>ข้อที่ {currentQuestionIndex + 1} / {quizQuestions.length}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${(currentQuestionIndex / quizQuestions.length) * 100}%` }}></div>
+                  </div>
+                </div>
+                <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                  <h3 className="text-xl md:text-2xl font-semibold text-gray-800 mb-6 leading-relaxed">
+                    {quizQuestions[currentQuestionIndex].id}. {quizQuestions[currentQuestionIndex].question}
+                  </h3>
+                  <div className="space-y-3">
+                    {quizQuestions[currentQuestionIndex].options.map((option, idx) => (
+                      <button key={idx} onClick={() => handleAnswerClick(idx)} className="w-full text-left p-4 rounded-xl border border-gray-200 hover:border-blue-500 hover:bg-blue-50 group flex items-start">
+                        <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 group-hover:bg-blue-600 group-hover:text-white font-bold mr-4">
+                          {String.fromCharCode(65 + idx)}
+                        </span>
+                        <span className="text-gray-700 mt-1">{option}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {currentView === 'result' && (
+              <div className="max-w-2xl mx-auto text-center animate-fade-in pt-10">
+                <div className="bg-white rounded-3xl shadow-xl p-10">
+                  <div className="inline-flex items-center justify-center w-24 h-24 bg-green-100 rounded-full mb-6">
+                    <IconCheckCircle className="w-12 h-12 text-green-600" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-gray-800 mb-2">ทำแบบทดสอบเสร็จสิ้น!</h2>
+                  <p className="text-gray-500 mb-8">ขอบคุณที่เข้าร่วมการเรียนรู้ {studentName}</p>
+                  
+                  <div className="bg-gray-50 rounded-2xl p-6 mb-8 border border-gray-100">
+                    <p className="text-sm text-gray-500 uppercase tracking-wider font-semibold mb-2">คะแนนของคุณ</p>
+                    <div className="text-6xl font-black text-blue-600 flex justify-center items-baseline">
+                      {score} <span className="text-3xl text-gray-400 font-medium ml-2">/ {quizQuestions.length}</span>
+                    </div>
+                  </div>
+
+                  <div className="text-sm mb-6">
+                    {isSubmitting ? (
+                      <span className="text-blue-500 flex items-center justify-center">กำลังส่งคำตอบ...</span>
+                    ) : saveStatus === 'success' ? (
+                      <span className="text-green-500 flex items-center justify-center bg-green-50 p-2 rounded-lg border border-green-200">ส่งคะแนนให้คุณครูเรียบร้อยแล้ว!</span>
+                    ) : (
+                      <span className="text-red-500 text-xs bg-red-50 p-2 rounded-lg border border-red-200">⚠️ พบข้อผิดพลาดในการส่งข้อมูล</span>
+                    )}
+                  </div>
+
+                  <button onClick={() => { setCurrentView('intro'); setStudentName(''); }} className="text-blue-600 font-medium hover:underline">
+                    กลับสู่หน้าเริ่มต้น
+                  </button>
+                </div>
+              </div>
+            )}
+
+          </main>
         </div>
-      </nav>
+      );
+    }
 
-      {/* Main Content Area */}
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        {currentView === 'intro' && renderIntro()}
-        {currentView === 'lesson' && renderLesson()}
-        {currentView === 'register' && renderRegister()}
-        {currentView === 'quiz' && renderQuiz()}
-        {currentView === 'result' && renderResult()}
-      </main>
-
-      {/* Custom Styles for basic animations */}
-      <style dangerouslySetInnerHTML={{__html: `
-        .animate-fade-in {
-          animation: fadeIn 0.5s ease-out;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}} />
-    </div>
-  );
-}
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
